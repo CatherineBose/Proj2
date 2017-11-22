@@ -1,0 +1,3 @@
+####################AWS Deployed public IP###################
+IPv4 Public IP
+13.57.40.32
