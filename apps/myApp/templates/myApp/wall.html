@@ -10,8 +10,61 @@
     
     <a href="/logout" >Logout</a>
     <h1>Hello, {{user.name}} aka {{user.alias}}!</h1>
-
-    
+    <p>here are your appointments for today {% now "jS F Y H:i" %}</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>Tasks</td>                  
+                <td>Time</td>
+                <td>Status</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        {% for i in todayApp %}
+        <tr>
+            <td>{{i.task}}</td>
+            <td>{{i.time}}</td>
+            <td>{{i.status}}</td>
+            <td><a href='/appointments/{{i.id}}'/>Edit</a>
+                <a href='/remove/{{i.id}}'/>Delete</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>Your other appointments</p>
+    <table border="1">
+        <thead>
+            <tr>
+                <td>Tasks</td> 
+                <td>Date</td>                 
+                <td>Time</td>
+            </tr>
+        </thead>
+        {% for i in remApp %}
+        <tr>
+            <td>{{i.task}}</td>
+            <td>{{i.date}}</td>
+            <td>{{i.time}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <p>Add Appointment</p>
+    <form action=/appointments/add/ method='post'>
+        {% csrf_token %}
+        <div class="col-lg-4">
+            <br>Date:<input type="date" name="start_date" id="start_date">
+            <br>Time: <input id="time" type="time" name = "time">
+            <br>Tasks:<input type="text" name="description" >
+            <br><input type="submit" class="btn btn-secondary" value="Add">
+        <br><br><br><br>
+        </div>
+    </form>
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
 </body>
 </html>
 

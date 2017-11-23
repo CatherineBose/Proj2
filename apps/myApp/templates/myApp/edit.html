@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <a href="/logout" >Logout</a>
+    <a href="/home" >Dashboard</a>
+   
+    <h1>Edit your appointment{{user.name}} </h1>
+
+    <form action="/update/{{request.session.id}}/{{appointment.id}}" method='post'></form>
+        {% csrf_token %}
+        <div class="col-lg-4">
+            <br>Date:<input type="date" name="start_date" id="start_date" value ={{appointment.date}} >
+            <br>Time: <input id="time" type="time" name = "time" value ={{appointment.time|time:"H:i" }}>
+            <br>Tasks:<input type="text" name="task" value ={{appointment.task}} >
+            <br>Status:<select name="status" form="appform">
+                <option value="pending">Pending</option>
+                <option value="missed">Missed</option>t
+                <option value="Done">Done</option>
+              </select>
+            <br><input type="submit" class="btn btn-secondary" value="Submit">
+        <br><br><br><br>
+        </div>
+    </form>
+</html>

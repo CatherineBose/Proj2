@@ -6,7 +6,8 @@ urlpatterns = [
     url(r'^login$', views.login),
     url(r'^logout$', views.logout),
     url(r'^home$', views.wall),
-    url(r'^user/(?P<id>\d+)',views.show),
+    url(r'^appointments/(?P<id>\d+)',views.edit),
     url(r'^remove/(?P<id>\d+)', views.remove),
-    url(r'^travels/add/', views.add)
+    url(r'^appointments/add/', views.add),
+    url(r'^update/(?P<number>\d+)/(?P<id>\d+)$', views.update),
 ]

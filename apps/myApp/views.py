@@ -5,6 +5,7 @@ from django.contrib import messages
 from django.shortcuts import render, HttpResponse, redirect
 from .models import User
 from .models import *
+import datetime
 
 # urlpatterns = [
 #     url(r'^$', views.index),     # This line has changed
@@ -59,25 +60,54 @@ def wall(request):
     except KeyError:
         return redirect ('/')
     user = User.objects.get(id=request.session['user_id'])
+    id = request.session['user_id']
+    date = datetime.datetime.now()
+    dateformat= date.strftime('%Y-%m-%d')
+    print dateformat
+    print "date:", datetime.datetime.now()
+    print "id", id
+    todayApp = Appointment.objects.filter(users= id).filter(date = dateformat).order_by("time")
+    remainingApp = Appointment.objects.filter(users= id).exclude(date = dateformat).order_by("time")
+    for i in todayApp:
+        print i.task
+        print i.date
+        print i.status
+    context ={
+        'user': user,
+        'todayApp': todayApp,
+        'remApp': remainingApp
+    }
+    return render(request,'myApp/wall.html', context)
 
-    return render(request,'myApp/wall.html')
 
+def edit(request, number):
 
-def show(request, id):
+	appointment = Appointment.objects.get(id = number)
+	context = {
+		"appointment": appointment
+	}
+	#user_id = request.session['id']
+def edit(request, id):
     try:
         request.session['user_id']
     except KeyError:
         return redirect ('/')
+
     print "request.session['user_id']", request.session['user_id']
-    print "id called : ", id
-    user = User.objects.get(id=id)
+    print "appointment id called to edit : ", id
+    user = User.objects.get(id=request.session['user_id'])
     print user.name
-    print user.email
-    print user.alias
+    appointment = Appointment.objects.get(id = id)
+  
+    appointment.date = (appointment.date).strftime('%Y-%m-%d')
+    appointment.time = appointment.time.replace(microsecond = 0)
+    print  appointment.time
+    print "appointment .id: ", appointment.id
     context ={
-        'user': user
+        'user': user,
+        'appointment': appointment
     }
-    return render(request,'myApp/show.html', context)
+    return render(request,'myApp/edit.html', context)
 
 
 def remove(request,id):
@@ -93,5 +123,32 @@ def add(request):
     try:
         request.session['user_id']
     except KeyError:
-        return redirect ('/')   
+        return redirect ('/')  
+    user_id = request.session['id']
+    task = POST['task']
+    date = (postData['date']).strftime('%Y-%m-%d')
+    time = POST['time']
+    print "form data Inside add"
+    print task, date, time
+    # appointment = Appointment.objects.appointment_valid(request.POST, user_id)
+    # if appointment[0] == False:
+    #     for error in appointment[1]:
+    #         messages.add_message(request, messages.INFO, error)
+    # Appointment.objects.create(task="dentist", date ='2018-10-12', time = '10:00:00', users_id = 1)
+    appointment = Appointment.objects.create(user_id=user_id, task=task, date=date, time=time)
     return redirect('/home')
+
+def update(request, user_id, id):
+	result= Appointment.objects.update_myapp(request.POST, user_id, id)
+	user_id = request.session['id']
+	# appointment = Appointment.objects.appointment_valid(request.POST, user_id)
+	# appointment.save()
+	if result[0] == False:
+		for error in result[1]:
+			messages.add_message(request, messages.INFO, error)
+	else:
+		return redirect("/appointments")
+
+	return redirect("/update")
+
+
