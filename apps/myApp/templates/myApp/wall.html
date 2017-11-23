@@ -51,9 +51,9 @@
     <form action=/appointments/add/ method='post'>
         {% csrf_token %}
         <div class="col-lg-4">
-            <br>Date:<input type="date" name="start_date" id="start_date">
+            <br>Date:<input type="date" name="date" id="date">
             <br>Time: <input id="time" type="time" name = "time">
-            <br>Tasks:<input type="text" name="description" >
+            <br>Tasks:<input type="text" name="task" >
             <br><input type="submit" class="btn btn-secondary" value="Add">
         <br><br><br><br>
         </div>

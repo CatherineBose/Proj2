@@ -68,10 +68,10 @@ def wall(request):
     print "id", id
     todayApp = Appointment.objects.filter(users= id).filter(date = dateformat).order_by("time")
     remainingApp = Appointment.objects.filter(users= id).exclude(date = dateformat).order_by("time")
-    for i in todayApp:
-        print i.task
-        print i.date
-        print i.status
+    # for i in todayApp:
+    #     print i.task
+    #     print i.date
+    #     print i.status
     context ={
         'user': user,
         'todayApp': todayApp,
@@ -124,19 +124,22 @@ def add(request):
         request.session['user_id']
     except KeyError:
         return redirect ('/')  
-    user_id = request.session['id']
-    task = POST['task']
-    date = (postData['date']).strftime('%Y-%m-%d')
-    time = POST['time']
+    # user_id = request.session['user_id']
+    # task = request.POST['task']
+    # date = (request.POST['date']).strftime('%Y-%m-%d')
+    # time = request.POST['time']
     print "form data Inside add"
-    print task, date, time
-    # appointment = Appointment.objects.appointment_valid(request.POST, user_id)
-    # if appointment[0] == False:
-    #     for error in appointment[1]:
-    #         messages.add_message(request, messages.INFO, error)
-    # Appointment.objects.create(task="dentist", date ='2018-10-12', time = '10:00:00', users_id = 1)
-    appointment = Appointment.objects.create(user_id=user_id, task=task, date=date, time=time)
-    return redirect('/home')
+    # print task, date, time
+    print "##Appointment Add method #########"
+    result = Appointment.objects.appointment_valid_add_create(request.POST, request.session['user_id'])
+    print "result", result
+    if type(result) == list:
+        for err in result:
+            messages.error(request, err)
+        return redirect('/home')
+    else:
+        messages.success(request, "Successfully Added Appointment!")
+        return redirect('/home')
 
 def update(request, user_id, id):
 	result= Appointment.objects.update_myapp(request.POST, user_id, id)
